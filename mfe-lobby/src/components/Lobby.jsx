@@ -18,7 +18,6 @@ function GameCard({ game }) {
     // L'evenement doit contenir: { gameName: game.name }
     //
     // Ecrivez votre code ici:
-    eventBus.emit('game:joined', { gameName: game.name });
 
 
     // Feedback visuel (gardez cette ligne)
