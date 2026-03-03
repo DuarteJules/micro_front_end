@@ -16,14 +16,6 @@ function Navbar() {
     // 2. Optionnel: afficher data.gameName dans la console
     //
     // Ecrivez votre code ici:
-    const unsubscribe = eventBus.on('game:joined', (data) => {
-      setNotifications((prev) => prev + 1);
-      console.log('[Navbar] game:joined', data?.gameName);
-    });
-
-       const unsubscribe2 = eventBus.on('cart:add', (data) => {
-      setNotifications((prev) => prev + 1);
-    });
 
 
     // TODO 2: Se desabonner quand le composant est demonte
@@ -32,9 +24,17 @@ function Navbar() {
     // Indice: retourner une fonction cleanup dans useEffect
     //
     // return () => { ... };
+    const unsubscribe = eventBus.on('game:joined', (data) => {
+      setNotifications(prev => prev + 1);
+      console.log(`Partie rejointe: ${data.gameName}`);
+    });
+    const unsubscribeCart = eventBus.on('cart:update', (data) => {
+      console.log(`Panier mis à jour: ${data.itemCount} articles, total ${data.total} €`);
+    });
+
     return () => {
       unsubscribe();
-      unsubscribe2();
+      unsubscribeCart();
     };
 
   }, []);
