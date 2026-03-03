@@ -7,16 +7,14 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "[name].[contenthash].js",
-    publicPath: "http://localhost:3000/",
+    publicPath: "http://localhost:3003/",
     clean: true,
   },
   devServer: {
-    port: 3000,
+    port: 3003,
     hot: true,
     historyApiFallback: true,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    },
+    headers: { "Access-Control-Allow-Origin": "*" },
   },
   module: {
     rules: [
@@ -25,39 +23,30 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
-          options: {
-            presets: ["@babel/preset-env", "@babel/preset-react"],
-          },
+          options: { presets: ["@babel/preset-env", "@babel/preset-react"] },
         },
       },
-      {
-        test: /\.css$/,
-        use: ["style-loader", "css-loader"],
-      },
+      { test: /\.css$/, use: ["style-loader", "css-loader"] },
     ],
   },
   resolve: {
     extensions: [".js", ".jsx"],
-    alias: {
-      shared: path.resolve(__dirname, "../shared"),
-    },
+    alias: { shared: path.resolve(__dirname, "../shared") },
   },
   plugins: [
     new ModuleFederationPlugin({
-      name: "shell",
-      remotes: {
-        mfeHeader: "mfeHeader@http://localhost:3001/remoteEntry.js",
-        mfeLobby: "mfeLobby@http://localhost:3002/remoteEntry.js",
-        // TODO: déclarer mfe-catalog comme remote (port 3003)
-        mfeCatalog: "mfeCatalog@http://localhost:3003/remoteEntry.js",
-      },
+      // TODO 1 : name — comment ce MFE s'annonce sur le réseau ?
+      // TODO 2 : filename — quel fichier le Shell va-t-il charger ?
+      // TODO 3 : exposes — quel composant expose-t-on ? (clé → chemin fichier)
+      // TODO 4 : shared — quelles libs partager avec le Shell ?
+      name: "mfeCatalog",
+      filename: "remoteEntry.js",
+      exposes: { "./Catalog": "./src/components/Catalog" },
       shared: {
         react: { singleton: true, requiredVersion: "^18.2.0" },
         "react-dom": { singleton: true, requiredVersion: "^18.2.0" },
       },
     }),
-    new HtmlWebpackPlugin({
-      template: "./public/index.html",
-    }),
+    new HtmlWebpackPlugin({ template: "./public/index.html" }),
   ],
 };
